@@ -538,7 +538,7 @@ fun getPersonFromDeveloper(developer: Developer): Person {
 } 
 
 //----apply----
-//You can use it when you need to do something with an object and return it 
+//You can use it when you need to do something with an object and return it (creating builders)
 fun getPerson(): Person {
     return Person().apply {
         name = "John"
@@ -546,3 +546,31 @@ fun getPerson(): Person {
     }
 }
 
+
+//---------- Nullabillity----------
+//It's a way to indicate which variables or properties are allowed to be null.
+val s:String?
+
+//Handling null values using if checks
+fun strLenSafe(s:String?) = if(s!=null) s.length else 0
+
+//Safe call operator: '?.'
+fun strLenSafe(s:String?) =  s?.length else 0
+
+//Chaining multiple safe-call operators
+val country = company?.adress?.country
+
+//Elvis operator ?:
+//Provide default values isntead of null
+val country = company?.adress?.country ?: "Unknown"
+
+//Safe casts: 'as?'
+//Casts a value to the given type and returns null if the type differs
+val isTypePerson = x as? Person ?: return false //compined with elvis operator to return false instead of null
+
+//Not-null assertion: '!!'
+//You are telling the compiler that you know that the value is not null.
+//This may be used when you check for null in one function, then use the value in another,
+//where there is no need to check there too, and you need to stop the compiler error,
+//because the compiler cannot know if the use is safe. 
+//If finally for any reason a null value is passed to the 2nd function an exception will be thrown.
