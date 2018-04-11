@@ -526,6 +526,23 @@ people.asSequence()
 .toList()
 
 
+//---------- Lamdas with receivers - 'with' and 'apply'----------
+//Perform multiple operations on the same object without repeating its name
 
+//----with----
+//You can use it when you need to perform some operations on an object and return some other object
+fun getPersonFromDeveloper(developer: Developer): Person {
+    return with(developer) {
+        Person(developerName, developerAge)
+    }
+} 
 
+//----apply----
+//You can use it when you need to do something with an object and return it 
+fun getPerson(): Person {
+    return Person().apply {
+        name = "John"
+        age = 22
+    }
+}
 
