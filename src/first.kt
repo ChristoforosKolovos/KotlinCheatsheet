@@ -574,3 +574,11 @@ val isTypePerson = x as? Person ?: return false //compined with elvis operator t
 //where there is no need to check there too, and you need to stop the compiler error,
 //because the compiler cannot know if the use is safe. 
 //If finally for any reason a null value is passed to the 2nd function an exception will be thrown.
+val sNotNull: String = s!!
+
+
+//'let'
+//Handling a nullable argument that should be passed to a function that expects non-null parameter
+fun sendEmailTo(email:String)
+email?.let{ sendEmailTo(it)}
+
