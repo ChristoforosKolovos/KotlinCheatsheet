@@ -471,5 +471,61 @@ fun lamdaTest() {
 
 }
 
+//---------- Functional APIs for collections----------
+
+//----filter----
+//Selects the elemetns for which the given lambda returns true
+list.filter{it%2 ==0}
+
+//----map----
+//Applies the given lambda to each elemt
+list.map{it*it} //transforms the list memebrs into a list of their square
+list.map{it.name} //if you want to print just a list of names
+
+//----all----
+//Check if all elements satify the give expression
+people.all{p:Person -> p.age<=27}
+
+//----any----
+//Check if at least one element satifies the give expression
+people.any{p:Person -> p.age<=27}
+
+//----count----
+//if you want to know how many elemnts satisfy the given expression
+people.count{p:Person -> p.age<=27}
+
+//----find----
+//To find the elements that satisfy the given expression
+people.find{p:Person -> p.age<=27}
+
+
+//----groupBy----
+//Converts a list to a map of groups
+people.groupBy{it.age} //more in page 117
+
+
+//----flatMap----
+//It transforms (maps) to a collection according to lambda and
+//it combines (flatterns) several lists into one
+
+val strings listOf("abc","def")
+println(strings.flatMap{it.toList()}) //we can use 'toSet()' instead of 'toList()' to remove duplicates
+//output: [a,b,c,d,e,f]
+
+
+
+//----Sequence----
+//You can use sequences to efficiently perform chains of operations on elements of a collection 
+//without creating collections to hold intermediated results of the proccessing.
+//We can convert any collection to a sequence by calling the extension function 'asSequence()'
+//and convert it back to list using 'toList()'
+
+people.asSequence()
+    .map(Person::name)
+.filter{it.startsWith("A")}
+.toList()
+
+
+
 
 
