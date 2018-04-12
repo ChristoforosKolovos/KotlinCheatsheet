@@ -56,6 +56,11 @@ fun forLoops() {
     for (i in 1..100 step 5) {
         println(i)
     }
+
+    //Destructuring declaration
+    for ((key, value) in map) {
+        println("$key - $value")
+    }
 }
 
 //While loops
@@ -382,6 +387,22 @@ class myCollection<T>(innerList: Collection<T> = ArrayList<T>()) : Collection<T>
     //If we need to change the behavior of a method we can override it and that code will be called instead of the original method
 }
 
+//Delegated properties
+var p: Int by Delegate()
+
+class Delegate {
+    operator fun getValue(...) {
+        //...
+    }
+
+    operator fun setValue(...) {
+        //...
+    }
+}
+
+//lazy initialization
+var email by lazy { loadEmails(this) }
+
 
 //---------- the 'object' keyword ----------
 //Defines class and creatres an instance
@@ -475,43 +496,42 @@ fun lamdaTest() {
 
 //----filter----
 //Selects the elemetns for which the given lambda returns true
-list.filter{it%2 ==0}
+list.filter{ it % 2 == 0 }
 
 //----map----
 //Applies the given lambda to each elemt
-list.map{it*it} //transforms the list memebrs into a list of their square
-list.map{it.name} //if you want to print just a list of names
+list.map{ it * it } //transforms the list memebrs into a list of their square
+list.map{ it.name } //if you want to print just a list of names
 
 //----all----
 //Check if all elements satify the give expression
-people.all{p:Person -> p.age<=27}
+people.all{ p:Person -> p.age<=27 }
 
 //----any----
 //Check if at least one element satifies the give expression
-people.any{p:Person -> p.age<=27}
+people.any{ p:Person -> p.age<=27 }
 
 //----count----
 //if you want to know how many elemnts satisfy the given expression
-people.count{p:Person -> p.age<=27}
+people.count{ p:Person -> p.age<=27 }
 
 //----find----
 //To find the elements that satisfy the given expression
-people.find{p:Person -> p.age<=27}
+people.find{ p:Person -> p.age<=27 }
 
 
 //----groupBy----
 //Converts a list to a map of groups
-people.groupBy{it.age} //more in page 117
+people.groupBy{ it.age } //more in page 117
 
 
 //----flatMap----
 //It transforms (maps) to a collection according to lambda and
 //it combines (flatterns) several lists into one
 
-val strings listOf("abc","def")
-println(strings.flatMap{it.toList()}) //we can use 'toSet()' instead of 'toList()' to remove duplicates
+val strings listOf("abc", "def")
+println(strings.flatMap{ it.toList() }) //we can use 'toSet()' instead of 'toList()' to remove duplicates
 //output: [a,b,c,d,e,f]
-
 
 
 //----Sequence----
@@ -521,8 +541,8 @@ println(strings.flatMap{it.toList()}) //we can use 'toSet()' instead of 'toList(
 //and convert it back to list using 'toList()'
 
 people.asSequence()
-    .map(Person::name)
-.filter{it.startsWith("A")}
+.map(Person::name)
+.filter{ it.startsWith("A") }
 .toList()
 
 
@@ -535,7 +555,7 @@ fun getPersonFromDeveloper(developer: Developer): Person {
     return with(developer) {
         Person(developerName, developerAge)
     }
-} 
+}
 
 //----apply----
 //You can use it when you need to do something with an object and return it (creating builders)
@@ -549,13 +569,13 @@ fun getPerson(): Person {
 
 //---------- Nullabillity----------
 //It's a way to indicate which variables or properties are allowed to be null.
-val s:String?
+val s: String?
 
 //Handling null values using if checks
-fun strLenSafe(s:String?) = if(s!=null) s.length else 0
+fun strLenSafe(s: String?) = if (s != null) s.length else 0
 
 //Safe call operator: '?.'
-fun strLenSafe(s:String?) =  s?.length else 0
+fun strLenSafe(s: String?) = s?.length else 0
 
 //Chaining multiple safe-call operators
 val country = company?.adress?.country
@@ -579,6 +599,81 @@ val sNotNull: String = s!!
 
 //'let'
 //Handling a nullable argument that should be passed to a function that expects non-null parameter
-fun sendEmailTo(email:String)
-email?.let{ sendEmailTo(it)}
+fun sendEmailTo(email: String)
+email?.let{ sendEmailTo(it) }
+
+
+//---------- Operators Overloading----------
+
+
+operator fun Point.plus(other: Point): Point {
+    return Point(x + other.x, y + other.y)
+}
+
+//usage
+val p1 = Point(10, 20)
+val p2 = Point(30, 40)
+println(p1+p2)
+//output: Point(x=40,y=60)
+
+//Overloadable binary arithmetic operators
+// '*' = times
+// '/' = div
+// '%' = mode
+// '+' = plus
+// '-' = minus
+
+//Overloadable unary operators
+// +a = unaryPlus
+// -a = unaryMinus
+// !a = not
+// ++a, a++ = inc
+// --a, a-- = dec
+
+//Equals overload operator
+// equals = '=='
+
+//Note: '===' is the same like java's '==' and it checks that both of its arguments reference the same object
+//and cannot be overloaded
+
+
+//'get' overloading
+operator fun Point.get(index: int): Int {
+    return when (index) {
+        0 -> x
+        1 -> y
+        else -> throw IndexOutOfBoundsException()
+    }
+}
+
+//usage
+println(p[1])
+
+//'set' overloading
+operator fun Point.set(index: int, value: Int) {
+    return when (index) {
+        0 -> x = value
+        1 -> y = value
+        else -> throw IndexOutOfBoundsException()
+    }
+}
+
+//usage
+p[1] = 23
+
+
+//'in' overloading
+operator fun Rectangle.contains(p: Point): Boolean {
+    //...
+}
+
+//usage
+Point(5,5) in rect
+
+
+//'rangeTo'
+operator fun <T : Comparable<T>> T.rangeTo(that: T): ClosedRange<T>
+
+//usage
+val range = x..y
 
