@@ -502,6 +502,18 @@ fun lamdaTest() {
 
     //------------------
 
+    run {
+        if (firstTimeView) introView else normalView
+    }.show()
+
+    //------------------
+
+    webview.settings.run {
+        javaScriptEnabled = true
+        databaseEnabled = true
+    }
+
+    //------------------
 
     val people = listOf(Person("Alice"), Person("John"))
 
