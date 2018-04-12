@@ -388,20 +388,68 @@ class myCollection<T>(innerList: Collection<T> = ArrayList<T>()) : Collection<T>
 }
 
 //Delegated properties
-var p: Int by Delegate()
+class Example {
+    var p: String by Delegate()
+}
 
 class Delegate {
-    operator fun getValue(...) {
-        //...
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
+        return "$thisRef, thank you for delegating '${property.name}' to me!"
     }
 
-    operator fun setValue(...) {
-        //...
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
+        println("$value has been assigned to '${property.name}' in $thisRef.")
     }
 }
 
-//lazy initialization
-var email by lazy { loadEmails(this) }
+//Lazy
+//lazy() is a function that takes a lambda and returns an instance of Lazy<T>
+//which can serve as a delegate for implementing a lazy property: the first call to get()
+//executes the lambda passed to lazy() and remembers the result, subsequent calls to get() simply return the remembered result.
+
+val lazyValue: String by lazy {
+    println("computed!")
+    "Hello"
+}
+
+fun main(args: Array<String>) {
+    println(lazyValue)
+    println(lazyValue)
+}
+
+//This example prints:
+//computed!
+//Hello
+//Hello
+
+
+//Observable
+//Delegates.observable() takes two arguments: the initial value and a handler for modifications.
+//The handler gets called every time we assign to the property (after the assignment has been performed).
+//It has three parameters: a property being assigned to, the old value and the new one:
+
+class User {
+    var name: String by Delegates.observable("<no name>") {
+        property, oldValue, newValue -> println("$oldValue -> $newValue")
+    }
+}
+
+fun main(args: Array<String>) {
+    val user = User()
+    user.name = "first"
+    user.name = "second"
+}
+
+//This example prints:
+//<no name> -> first
+//first -> second
+
+
+//Storing Properties in a Map using delegation
+class User(val map: Map<String, Any?>) {
+    val name: String by map
+    val age: Int     by map
+}
 
 
 //---------- the 'object' keyword ----------
