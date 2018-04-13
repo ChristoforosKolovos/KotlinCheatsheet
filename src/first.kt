@@ -429,8 +429,8 @@ fun main(args: Array<String>) {
 //It has three parameters: a property being assigned to, the old value and the new one:
 
 class User {
-    var name: String by Delegates.observable("<no name>") {
-        property, oldValue, newValue -> println("$oldValue -> $newValue")
+    var name: String by Delegates.observable("<no name>") { property, oldValue, newValue ->
+        println("$oldValue -> $newValue")
     }
 }
 
@@ -483,6 +483,35 @@ fun objectTest() {
     })
 }
 
+//---------- Nullabillity----------
+//It's a way to indicate which variables or properties are allowed to be null.
+val s: String?
+
+//Handling null values using if checks
+fun strLenSafe(s: String?) = if (s != null) s.length else 0
+
+//Safe call operator: '?.'
+fun strLenSafe(s: String?) = s?.length else 0
+
+//Chaining multiple safe-call operators
+val country = company?.adress?.country
+
+//Elvis operator ?:
+//Provide default values isntead of null
+val country = company?.adress?.country ?: "Unknown"
+
+//Safe casts: 'as?'
+//Casts a value to the given type and returns null if the type differs
+val isTypePerson = x as? Person ?: return false //compined with elvis operator to return false instead of null
+
+//Not-null assertion: '!!'
+//You are telling the compiler that you know that the value is not null.
+//This may be used when you check for null in one function, then use the value in another,
+//where there is no need to check there too, and you need to stop the compiler error,
+//because the compiler cannot know if the use is safe.
+//If finally for any reason a null value is passed to the 2nd function an exception will be thrown.
+val sNotNull: String = s!!
+
 
 //---------- Lamdas ----------
 
@@ -512,6 +541,67 @@ fun lamdaTest() {
         javaScriptEnabled = true
         databaseEnabled = true
     }
+
+
+    //'let' and 'also'
+    //Handling a nullable argument that should be passed to a function that expects non-null parameter
+
+    //returns a different type of value
+    stringVariable?.let {
+        println("The length of this String is ${it.length}")
+    }
+
+    //returns the T itself i.e. this
+    stringVariable?.also {
+        println("The length of this String is ${it.length}")
+    }
+
+
+    //---------- Lamdas with receivers - 'with' and 'apply'----------
+    //Perform multiple operations on the same object without repeating its name
+
+    //----with----
+    //You can use it when you need to perform some operations on an object and return some other object
+    fun getPersonFromDeveloper(developer: Developer): Person {
+        return with(developer) {
+            Person(developerName, developerAge)
+        }
+    }
+
+    //----apply----
+    //You can use it when you need to do something with an object and return it (creating builders)
+    fun getPerson(): Person {
+        return Person().apply {
+            name = "John"
+            age = 22
+        }
+    }
+
+    //---- Functions Usage ----
+
+    class MyClass {
+        fun test() {
+            val str: String = "..."
+
+            val result = str.xxx {
+                print(this) // Receiver
+                print(it) // Argument
+                42 // Block return value
+            }
+        }
+    }
+
+    //╔══════════╦═════════════════╦═══════════════╦═══════════════╗
+    //║ Function ║ Receiver (this) ║ Argument (it) ║    Result     ║
+    //╠══════════╬═════════════════╬═══════════════╬═══════════════╣
+    //║ let      ║ this@MyClass    ║ String("...") ║ Int(42)       ║
+    //║ run      ║ String("...")   ║ N\A           ║ Int(42)       ║
+    //║ run*     ║ this@MyClass    ║ N\A           ║ Int(42)       ║
+    //║ with*    ║ String("...")   ║ N\A           ║ Int(42)       ║
+    //║ apply    ║ String("...")   ║ N\A           ║ String("...") ║
+    //║ also     ║ this@MyClass    ║ String("...") ║ String("...") ║
+    //╚══════════╩═════════════════╩═══════════════╩═══════════════╝
+    //* those functions are not extension methods, they need to be called the old-fashioned way
 
     //------------------
 
@@ -605,62 +695,6 @@ people.asSequence()
 .filter{ it.startsWith("A") }
 .toList()
 
-
-//---------- Lamdas with receivers - 'with' and 'apply'----------
-//Perform multiple operations on the same object without repeating its name
-
-//----with----
-//You can use it when you need to perform some operations on an object and return some other object
-fun getPersonFromDeveloper(developer: Developer): Person {
-    return with(developer) {
-        Person(developerName, developerAge)
-    }
-}
-
-//----apply----
-//You can use it when you need to do something with an object and return it (creating builders)
-fun getPerson(): Person {
-    return Person().apply {
-        name = "John"
-        age = 22
-    }
-}
-
-
-//---------- Nullabillity----------
-//It's a way to indicate which variables or properties are allowed to be null.
-val s: String?
-
-//Handling null values using if checks
-fun strLenSafe(s: String?) = if (s != null) s.length else 0
-
-//Safe call operator: '?.'
-fun strLenSafe(s: String?) = s?.length else 0
-
-//Chaining multiple safe-call operators
-val country = company?.adress?.country
-
-//Elvis operator ?:
-//Provide default values isntead of null
-val country = company?.adress?.country ?: "Unknown"
-
-//Safe casts: 'as?'
-//Casts a value to the given type and returns null if the type differs
-val isTypePerson = x as? Person ?: return false //compined with elvis operator to return false instead of null
-
-//Not-null assertion: '!!'
-//You are telling the compiler that you know that the value is not null.
-//This may be used when you check for null in one function, then use the value in another,
-//where there is no need to check there too, and you need to stop the compiler error,
-//because the compiler cannot know if the use is safe. 
-//If finally for any reason a null value is passed to the 2nd function an exception will be thrown.
-val sNotNull: String = s!!
-
-
-//'let'
-//Handling a nullable argument that should be passed to a function that expects non-null parameter
-fun sendEmailTo(email: String)
-email?.let{ sendEmailTo(it) }
 
 
 //---------- Operators Overloading----------
