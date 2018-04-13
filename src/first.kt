@@ -785,3 +785,22 @@ val x = myClass()
 x.invoke()
 //way 2
 x()
+
+
+
+
+
+
+
+
+fun manifest(){
+    //https://blog.philipphauer.de/idiomatic-kotlin-best-practices/
+
+    //Use Expressions ('when' instead of 'if')
+    //Top-Level (Extension) Functions for Utility Functions
+    //Named Arguments instead of Fluent Setter
+    //apply() for Grouping Object Initialization (builders)
+    //Don’t Overload for Default Arguments (dont create multiple constructors)
+    //Concisely Deal with Nullability. Avoid if-null Checks. You can use a null-safe call ?. or the elvis operator ?: instead.
+    //Avoid not-null Assertions !!
+}
