@@ -696,7 +696,6 @@ people.asSequence()
 .toList()
 
 
-
 //---------- Operators Overloading----------
 
 
@@ -771,3 +770,18 @@ operator fun <T : Comparable<T>> T.rangeTo(that: T): ClosedRange<T>
 //usage
 val range = x..y
 
+
+//'invoke'
+class myClass {
+    operator fun invoke() {
+        //...
+        //can also be written as extension likt the other operators
+    }
+}
+
+//usage
+val x = myClass()
+//way 1
+x.invoke()
+//way 2
+x()
